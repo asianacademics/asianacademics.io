@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClinicFinder - Healthcare Access Navigator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --primary-light: #3b82f6;
+            --secondary-color: #10b981;
+            --danger-color: #ef4444;
+            --warning-color: #f59e0b;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            line-height: 1.6;
+        }
+
+        /* ============= HEADER ============= */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: var(--gray-100);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* ============= MAIN CONTAINER ============= */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* ============= HERO SECTION ============= */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem 1rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* ============= SEARCH & FILTERS SECTION ============= */
+        .search-section {
+            background: white;
+            padding: 2rem 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .search-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--gray-900);
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--gray-700);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 0.75rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .filter-toggles {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .toggle-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid var(--gray-200);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .toggle-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .search-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        /* ============= RESULTS SECTION ============= */
+        .results-section {
+            margin-bottom: 3rem;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .results-count {
+            font-size: 1.2rem;
+            color: var(--gray-700);
+            font-weight: 500;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--gray-200);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .clinic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ============= CLINIC CARD ============= */
+        .clinic-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .clinic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .clinic-header {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .clinic-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .clinic-address {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.95;
+        }
+
+        .clinic-body {
+            padding: 1.5rem;
+        }
+
+        .clinic-info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .clinic-info-item i {
+            color: var(--primary-color);
+            min-width: 20px;
+            margin-top: 2px;
+        }
+
+        .clinic-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--gray-100);
+            color: var(--primary-color);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .tag.urgent {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .tag.specialty {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .rating-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .stars {
+            color: var(--warning-color);
+        }
+
+        .wait-time {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .wait-time.short {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--secondary-color);
+        }
+
+        .wait-time.medium {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .wait-time.long {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+
+        .clinic-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .clinic-actions button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-book {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-book:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-details {
+            background: var(--gray-100);
+            color: var(--primary-color);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-details:hover {
+            background: var(--gray-200);
+        }
+
+        /* ============= MAP VIEW ============= */
+        .map-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-500);
+        }
+
+        .map-placeholder {
+            text-align: center;
+        }
+
+        .map-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gray-300);
+        }
+
+        /* ============= MODAL ============= */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+
+        .modal-section h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-900);
+        }
+
+        .modal-section p {
+            color: var(--gray-700);
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-item {
+            background: var(--gray-50);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-author {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .review-date {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        .review-text {
+            color: var(--gray-700);
+            font-size: 0.95rem;
+        }
+
+        /* ============= ALERTS & NOTIFICATIONS ============= */
+        .alerts-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 1rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .alerts-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--gray-900);
+        }
+
+        .alert-item {
+            background: var(--gray-50);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-item.urgent {
+            border-left-color: var(--danger-color);
+        }
+
+        .alert-item.reminder {
+            border-left-color: var(--warning-color);
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 0.25rem;
+        }
+
+        .alert-description {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+        }
+
+        .alert-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .alert-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .alert-accept {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .alert-accept:hover {
+            opacity: 0.9;
+        }
+
+        .alert-dismiss {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .alert-dismiss:hover {
+            background: var(--gray-300);
+        }
+
+        /* ============= SPECIALTY SECTION ============= */
+        .specialty-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 1rem;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .specialty-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--gray-900);
+        }
+
+        .specialty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .specialty-btn {
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid var(--gray-200);
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: var(--gray-900);
+        }
+
+        .specialty-btn i {
+            display: block;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .specialty-btn:hover,
+        .specialty-btn.active {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+            transform: translateY(-2px);
+        }
+
+        /* ============= RESPONSIVE ============= */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .clinic-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-actions {
+                gap: 0.5rem;
+            }
+
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .filter-toggles {
+                gap: 0.5rem;
+            }
+
+            .toggle-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* ============= FOOTER ============= */
+        footer {
+            background: var(--gray-900);
+            color: white;
+            padding: 3rem 1rem 1rem;
+            text-align: center;
+        }
+
+        footer p {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--gray-300);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--gray-700);
+            padding-top: 1rem;
+            color: var(--gray-400);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-clinic-medical"></i>
+                <span>ClinicFinder</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="toggleNotifications()">
+                    <i class="fas fa-bell"></i> Alerts
+                </button>
+                <button class="btn btn-primary">Sign In</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <div class="hero">
+        <h1>Find Affordable Healthcare, Fast</h1>
+        <p>Discover clinics that accept your insurance, show real wait times, and support your health needs. All in one place.</p>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <!-- SEARCH & FILTERS SECTION -->
+        <div class="search-section">
+            <div class="search-header">
+                <i class="fas fa-search" style="margin-right: 0.5rem;"></i> Find Clinics Near You
+            </div>
+
+            <div class="search-grid">
+                <div class="form-group">
+                    <label for="location">Your Location</label>
+                    <input type="text" id="location" placeholder="Enter zip code or city" value="Southern California">
+                </div>
+                <div class="form-group">
+                    <label for="insurance">Insurance Provider</label>
+                    <select id="insurance">
+                        <option>Select Insurance</option>
+                        <option>Uninsured / Self-Pay</option>
+                        <option>Medi-Cal</option>
+                        <option>Medicare</option>
+                        <option>Blue Cross</option>
+                        <option>Aetna</option>
+                        <option>Cigna</option>
+                        <option>UnitedHealth</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="service">Service Type</label>
+                    <select id="service">
+                        <option>Select Service</option>
+                        <option>Physical / Athletic Clearance</option>
+                        <option>Vaccination</option>
+                        <option>Women's Health</option>
+                        <option>Mental Health</option>
+                        <option>Pediatric Care</option>
+                        <option>Lab Work</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-toggles">
+                <button class="toggle-btn active" onclick="toggleFilter(this, 'all')">All Clinics</button>
+                <button class="toggle-btn" onclick="toggleFilter(this, 'urgent')" title="For time-sensitive care">
+                    <i class="fas fa-clock"></i> Quick Appointments
+                </button>
+                <button class="toggle-btn" onclick="toggleFilter(this, 'lowcost')">
+                    <i class="fas fa-hand-holding-usd"></i> Low-Cost Options
+                </button>
+                <button class="toggle-btn" onclick="toggleFilter(this, 'languages')">
+                    <i class="fas fa-language"></i> Multiple Languages
+                </button>
+            </div>
+
+            <button class="search-btn" onclick="performSearch()">
+                <i class="fas fa-search"></i> Search Clinics
+            </button>
+        </div>
+
+        <!-- SPECIALTY QUICK FILTERS -->
+        <div class="specialty-section">
+            <div class="specialty-title">
+                <i class="fas fa-filter" style="margin-right: 0.5rem;"></i> Filter by Specialty
+            </div>
+            <div class="specialty-grid">
+                <button class="specialty-btn" onclick="filterBySpecialty(this, 'vaccine')">
+                    <i class="fas fa-syringe"></i>
+                    <div>Vaccinations</div>
+                </button>
+                <button class="specialty-btn" onclick="filterBySpecialty(this, 'physical')">
+                    <i class="fas fa-heartbeat"></i>
+                    <div>Physical Exams</div>
+                </button>
+                <button class="specialty-btn" onclick="filterBySpecialty(this, 'womens')">
+                    <i class="fas fa-venus"></i>
+                    <div>Women's Health</div>
+                </button>
+                <button class="specialty-btn" onclick="filterBySpecialty(this, 'mental')">
+                    <i class="fas fa-brain"></i>
+                    <div>Mental Health</div>
+                </button>
+                <button class="specialty-btn" onclick="filterBySpecialty(this, 'pediatric')">
+                    <i class="fas fa-child"></i>
+                    <div>Pediatric</div>
+                </button>
+                <button class="specialty-btn" onclick="filterBySpecialty(this, 'urgent')">
+                    <i class="fas fa-first-aid"></i>
+                    <div>Urgent Care</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- MAP VIEW -->
+        <div class="map-container">
+            <div class="map-placeholder">
+                <i class="fas fa-map"></i>
+                <p>Interactive Map Coming Soon</p>
+                <p style="font-size: 0.9rem; margin-top: 0.5rem;">Integration with Google Maps for location-based clinic discovery</p>
+            </div>
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div class="results-section">
+            <div class="results-header">
+                <div class="results-count">Showing <strong>6 clinics</strong> matching your criteria</div>
+                <div class="view-toggle">
+                    <button class="view-btn active" onclick="switchView(this, 'grid')">
+                        <i class="fas fa-th"></i> Grid
+                    </button>
+                    <button class="view-btn" onclick="switchView(this, 'list')">
+                        <i class="fas fa-list"></i> List
+                    </button>
+                </div>
+            </div>
+
+            <!-- CLINIC CARDS -->
+            <div class="clinic-grid" id="clinicGrid">
+                <!-- Clinic 1: Huntington Hospital -->
+                <div class="clinic-card">
+                    <div class="clinic-header">
+                        <div class="clinic-name">Huntington Hospital</div>
+                        <div class="clinic-address">
+                            <i class="fas fa-map-marker-alt"></i> 2 km away
+                        </div>
+                    </div>
+                    <div class="clinic-body">
+                        <div class="clinic-info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>(626) 577-2000</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Mon-Sun: 8 AM - 8 PM</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-map-pin"></i>
+                            <span>100 W California Blvd, Pasadena, CA</span>
+                        </div>
+
+                        <div class="clinic-tags">
+                            <span class="tag specialty">Physical Exams</span>
+                            <span class="tag specialty">Vaccinations</span>
+                            <span class="tag">Medi-Cal</span>
+                            <span class="tag">English/Spanish</span>
+                        </div>
+
+                        <div class="rating-row">
+                            <div>
+                                <div class="stars">★★★★★ <span style="color: var(--gray-600); font-size: 0.85rem;">(248 reviews)</span></div>
+                            </div>
+                            <span class="wait-time short">2-3 hrs</span>
+                        </div>
+
+                        <div class="clinic-actions">
+                            <button class="btn-book" onclick="bookAppointment('Huntington Hospital')">
+                                <i class="fas fa-calendar-check"></i> Book Now
+                            </button>
+                            <button class="btn-details" onclick="viewDetails('Huntington Hospital')">
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinic 2: CVS Minute Clinic -->
+                <div class="clinic-card">
+                    <div class="clinic-header">
+                        <div class="clinic-name">CVS MinuteClinic</div>
+                        <div class="clinic-address">
+                            <i class="fas fa-map-marker-alt"></i> 0.5 km away
+                        </div>
+                    </div>
+                    <div class="clinic-body">
+                        <div class="clinic-info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>(626) 555-0123</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Daily: 9 AM - 9 PM</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-map-pin"></i>
+                            <span>500 S Lake Ave, Pasadena, CA</span>
+                        </div>
+
+                        <div class="clinic-tags">
+                            <span class="tag specialty">Vaccinations</span>
+                            <span class="tag urgent">$$$ Higher Cost</span>
+                            <span class="tag">English</span>
+                        </div>
+
+                        <div class="rating-row">
+                            <div>
+                                <div class="stars">★★★★☆ <span style="color: var(--gray-600); font-size: 0.85rem;">(156 reviews)</span></div>
+                            </div>
+                            <span class="wait-time short">15-30 min</span>
+                        </div>
+
+                        <div class="clinic-actions">
+                            <button class="btn-book" onclick="bookAppointment('CVS MinuteClinic')">
+                                <i class="fas fa-calendar-check"></i> Book Now
+                            </button>
+                            <button class="btn-details" onclick="viewDetails('CVS MinuteClinic')">
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinic 3: San Gabriel Valley Health Center -->
+                <div class="clinic-card">
+                    <div class="clinic-header">
+                        <div class="clinic-name">SGV Health Center</div>
+                        <div class="clinic-address">
+                            <i class="fas fa-map-marker-alt"></i> 3.2 km away
+                        </div>
+                    </div>
+                    <div class="clinic-body">
+                        <div class="clinic-info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>(626) 555-7890</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Mon-Fri: 8 AM - 6 PM, Sat: 9 AM - 1 PM</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-map-pin"></i>
+                            <span>1234 S Garfield Ave, Alhambra, CA</span>
+                        </div>
+
+                        <div class="clinic-tags">
+                            <span class="tag specialty">All Services</span>
+                            <span class="tag">Medi-Cal/Medicare</span>
+                            <span class="tag">7+ Languages</span>
+                            <span class="tag secondary">Sliding Scale</span>
+                        </div>
+
+                        <div class="rating-row">
+                            <div>
+                                <div class="stars">★★★★★ <span style="color: var(--gray-600); font-size: 0.85rem;">(389 reviews)</span></div>
+                            </div>
+                            <span class="wait-time medium">1-2 hrs</span>
+                        </div>
+
+                        <div class="clinic-actions">
+                            <button class="btn-book" onclick="bookAppointment('SGV Health Center')">
+                                <i class="fas fa-calendar-check"></i> Book Now
+                            </button>
+                            <button class="btn-details" onclick="viewDetails('SGV Health Center')">
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinic 4: Pasadena Public Health Center -->
+                <div class="clinic-card">
+                    <div class="clinic-header">
+                        <div class="clinic-name">Pasadena Public Health</div>
+                        <div class="clinic-address">
+                            <i class="fas fa-map-marker-alt"></i> 1.1 km away
+                        </div>
+                    </div>
+                    <div class="clinic-body">
+                        <div class="clinic-info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>(626) 555-4567</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Mon-Fri: 7:30 AM - 5:30 PM</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-map-pin"></i>
+                            <span>1845 N Fair Oaks Ave, Pasadena, CA</span>
+                        </div>
+
+                        <div class="clinic-tags">
+                            <span class="tag specialty">Women's Health</span>
+                            <span class="tag specialty">Mental Health</span>
+                            <span class="tag">Low-Cost</span>
+                            <span class="tag">English/Spanish</span>
+                        </div>
+
+                        <div class="rating-row">
+                            <div>
+                                <div class="stars">★★★★☆ <span style="color: var(--gray-600); font-size: 0.85rem;">(267 reviews)</span></div>
+                            </div>
+                            <span class="wait-time long">3-4 hrs</span>
+                        </div>
+
+                        <div class="clinic-actions">
+                            <button class="btn-book" onclick="bookAppointment('Pasadena Public Health')">
+                                <i class="fas fa-calendar-check"></i> Book Now
+                            </button>
+                            <button class="btn-details" onclick="viewDetails('Pasadena Public Health')">
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinic 5: Telehealth Option -->
+                <div class="clinic-card">
+                    <div class="clinic-header">
+                        <div class="clinic-name">Virtual First Care</div>
+                        <div class="clinic-address">
+                            <i class="fas fa-globe"></i> 100% Online
+                        </div>
+                    </div>
+                    <div class="clinic-body">
+                        <div class="clinic-info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>Available 24/7 via app</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Next available: 30 minutes</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-video"></i>
+                            <span>Video consultations with licensed doctors</span>
+                        </div>
+
+                        <div class="clinic-tags">
+                            <span class="tag specialty">Telehealth</span>
+                            <span class="tag specialty">Consultations</span>
+                            <span class="tag">Most Insurance</span>
+                            <span class="tag secondary">$35-75</span>
+                        </div>
+
+                        <div class="rating-row">
+                            <div>
+                                <div class="stars">★★★★★ <span style="color: var(--gray-600); font-size: 0.85rem;">(521 reviews)</span></div>
+                            </div>
+                            <span class="wait-time short">30 min</span>
+                        </div>
+
+                        <div class="clinic-actions">
+                            <button class="btn-book" onclick="bookAppointment('Virtual First Care')">
+                                <i class="fas fa-video"></i> Start Video Call
+                            </button>
+                            <button class="btn-details" onclick="viewDetails('Virtual First Care')">
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinic 6: Affordable Care Network -->
+                <div class="clinic-card">
+                    <div class="clinic-header">
+                        <div class="clinic-name">Affordable Care Network</div>
+                        <div class="clinic-address">
+                            <i class="fas fa-map-marker-alt"></i> 2.8 km away
+                        </div>
+                    </div>
+                    <div class="clinic-body">
+                        <div class="clinic-info-item">
+                            <i class="fas fa-phone"></i>
+                            <span>(626) 555-9999</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Mon-Sat: 10 AM - 7 PM</span>
+                        </div>
+                        <div class="clinic-info-item">
+                            <i class="fas fa-map-pin"></i>
+                            <span>950 S Fair Oaks Ave, South Pasadena, CA</span>
+                        </div>
+
+                        <div class="clinic-tags">
+                            <span class="tag specialty">All Services</span>
+                            <span class="tag secondary">Uninsured Welcome</span>
+                            <span class="tag">Sliding Scale</span>
+                            <span class="tag">6 Languages</span>
+                        </div>
+
+                        <div class="rating-row">
+                            <div>
+                                <div class="stars">★★★★★ <span style="color: var(--gray-600); font-size: 0.85rem;">(312 reviews)</span></div>
+                            </div>
+                            <span class="wait-time medium">1.5-2 hrs</span>
+                        </div>
+
+                        <div class="clinic-actions">
+                            <button class="btn-book" onclick="bookAppointment('Affordable Care Network')">
+                                <i class="fas fa-calendar-check"></i> Book Now
+                            </button>
+                            <button class="btn-details" onclick="viewDetails('Affordable Care Network')">
+                                Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTS & REMINDERS SECTION -->
+        <div class="alerts-section">
+            <div class="alerts-title">
+                <i class="fas fa-bell"></i> Your Health Alerts & Reminders
+            </div>
+
+            <div class="alert-item urgent">
+                <div class="alert-content">
+                    <div class="alert-title">Athletic Clearance Needed by March 28</div>
+                    <div class="alert-description">You have 13 days left to complete your sports physical. Schedule now at a nearby clinic.</div>
+                </div>
+                <div class="alert-actions">
+                    <button class="alert-btn alert-accept" onclick="dismissAlert(this)">Schedule Now</button>
+                    <button class="alert-btn alert-dismiss" onclick="dismissAlert(this)">Dismiss</button>
+                </div>
+            </div>
+
+            <div class="alert-item reminder">
+                <div class="alert-content">
+                    <div class="alert-title">Hepatitis B Vaccination Update</div>
+                    <div class="alert-description">Based on your health profile, you may be due for a Hepatitis B booster. Check eligibility with your provider.</div>
+                </div>
+                <div class="alert-actions">
+                    <button class="alert-btn alert-accept" onclick="dismissAlert(this)">Learn More</button>
+                    <button class="alert-btn alert-dismiss" onclick="dismissAlert(this)">Dismiss</button>
+                </div>
+            </div>
+
+            <div class="alert-item" style="border-left-color: var(--secondary-color);">
+                <div class="alert-content">
+                    <div class="alert-title">New Appointment Available at SGV Health Center</div>
+                    <div class="alert-description">A physical exam slot opened up on March 18 at 2 PM. Slots are filling up fast!</div>
+                </div>
+                <div class="alert-actions">
+                    <button class="alert-btn alert-accept" onclick="dismissAlert(this)">Book It</button>
+                    <button class="alert-btn alert-dismiss" onclick="dismissAlert(this)">Skip</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DETAILS MODAL -->
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalClinicName">Clinic Name</h2>
+                <button class="modal-close" onclick="closeModal('detailsModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3>Insurance Accepted</h3>
+                    <p id="modalInsurance">Loading...</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Services Offered</h3>
+                    <p id="modalServices">Loading...</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Cost Estimates</h3>
+                    <p id="modalCost">Loading...</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Language Services</h3>
+                    <p id="modalLanguages">Loading...</p>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Recent Reviews</h3>
+                    <div id="modalReviews">Loading...</div>
+                </div>
+
+                <div class="modal-section">
+                    <h3>Important Documents to Bring</h3>
+                    <ul style="color: var(--gray-700);">
+                        <li>Insurance card (if you have one)</li>
+                        <li>Government-issued ID</li>
+                        <li>Recent medical records (if available)</li>
+                        <li>List of current medications</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOKING MODAL -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Book Appointment</h2>
+                <button class="modal-close" onclick="closeModal('bookingModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3>Clinic: <span id="bookingClinicName">Loading...</span></h3>
+                </div>
+
+                <div class="modal-section">
+                    <label class="form-group" style="margin-bottom: 1rem;">
+                        <label>Service Type</label>
+                        <select style="width: 100%; padding: 0.75rem; border: 2px solid var(--gray-200); border-radius: 8px; font-size: 1rem;">
+                            <option>Physical / Athletic Clearance</option>
+                            <option>Vaccination</option>
+                            <option>Women's Health</option>
+                            <option>Mental Health Consultation</option>
+                            <option>Lab Work</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="modal-section">
+                    <label class="form-group" style="margin-bottom: 1rem;">
+                        <label>Preferred Date</label>
+                        <input type="date" style="width: 100%; padding: 0.75rem; border: 2px solid var(--gray-200); border-radius: 8px; font-size: 1rem;">
+                    </label>
+                </div>
+
+                <div class="modal-section">
+                    <label class="form-group" style="margin-bottom: 1rem;">
+                        <label>Preferred Time</label>
+                        <select style="width: 100%; padding: 0.75rem; border: 2px solid var(--gray-200); border-radius: 8px; font-size: 1rem;">
+                            <option>Morning (8 AM - 12 PM)</option>
+                            <option>Afternoon (12 PM - 5 PM)</option>
+                            <option>Evening (5 PM - 8 PM)</option>
+                        </select>
+                    </label>
+                </div>
+
+                <button class="search-btn" style="margin-top: 1.5rem;" onclick="confirmBooking()">
+                    <i class="fas fa-check"></i> Confirm Appointment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p><strong>ClinicFinder</strong> - Healthcare Access Navigator for Southern California</p>
+        <div class="footer-links">
+            <a href="#about">About Us</a>
+            <a href="#privacy">Privacy Policy</a>
+            <a href="#terms">Terms of Service</a>
+            <a href="#contact">Contact Us</a>
+            <a href="#feedback">Send Feedback</a>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ClinicFinder. Supported by healthcare access advocates.</p>
+            <p>Data sources: CA Health Care Foundation, HRSA, Local Health Departments | Last updated: March 2026</p>
+        </div>
+    </footer>
+
+    <script>
+        // ============= FUNCTIONALITY =============
+
+        // Toggle filter buttons
+        function toggleFilter(button, type) {
+            document.querySelectorAll('.filter-toggles .toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+        }
+
+        // Filter by specialty
+        function filterBySpecialty(button, specialty) {
+            button.classList.toggle('active');
+            console.log('Filtering by specialty:', specialty);
+        }
+
+        // Switch view (grid/list)
+        function switchView(button, view) {
+            document.querySelectorAll('.view-toggle .view-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            button.classList.add('active');
+
+            const grid = document.getElementById('clinicGrid');
+            if (view === 'list') {
+                grid.style.gridTemplateColumns = '1fr';
+            } else {
+                grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(300px, 1fr))';
+            }
+        }
+
+        // View clinic details
+        function viewDetails(clinicName) {
+            const modal = document.getElementById('detailsModal');
+            document.getElementById('modalClinicName').textContent = clinicName;
+
+            // Sample data for clinics
+            const clinicData = {
+                'Huntington Hospital': {
+                    insurance: 'Medi-Cal, Medicare, Blue Cross, Aetna, Cigna, UnitedHealth, most major insurers',
+                    services: 'Physical exams, Athletic clearances, Vaccinations, Lab work, Emergency care, Specialty referrals',
+                    cost: 'Copay typically $20-50 with insurance. Uninsured: sliding scale available. Athletic clearance: $100-150',
+                    languages: 'English, Spanish, Mandarin, Vietnamese, Korean'
+                },
+                'CVS MinuteClinic': {
+                    insurance: 'Most major insurances accepted',
+                    services: 'Vaccinations, Minor illnesses, Flu shots, Travel vaccines, TB tests',
+                    cost: 'Walk-in visits: $99-199 without insurance. Higher than public clinics but convenient.',
+                    languages: 'English primarily'
+                },
+                'SGV Health Center': {
+                    insurance: 'Medi-Cal, Medicare, uninsured welcome',
+                    services: 'All primary care services, Preventative care, Chronic disease management, Behavioral health',
+                    cost: 'Free to $50 on sliding scale based on income',
+                    languages: 'English, Spanish, Mandarin, Cantonese, Vietnamese, Korean, Tagalog, Armenian'
+                },
+                'Pasadena Public Health': {
+                    insurance: 'Medi-Cal, Medicare, uninsured welcome',
+                    services: 'Women\'s health, Mental health, Family planning, Prenatal care, Pediatrics',
+                    cost: 'Low-cost or free based on income',
+                    languages: 'English, Spanish'
+                },
+                'Virtual First Care': {
+                    insurance: 'Most major insurances, uninsured available',
+                    services: 'Initial consultations, Prescription refills, Medical advice, Triage for in-person visits',
+                    cost: '$35-75 per visit with insurance, $50-100 self-pay',
+                    languages: 'English, Spanish, and select others'
+                },
+                'Affordable Care Network': {
+                    insurance: 'All major insurances, uninsured welcome',
+                    services: 'Comprehensive primary care, Preventative care, Urgent care, Specialty referrals',
+                    cost: 'Sliding scale $0-150 based on income. No one turned away.',
+                    languages: 'English, Spanish, Mandarin, Vietnamese, Tagalog, Korean, Arabic'
+                }
+            };
+
+            const data = clinicData[clinicName] || clinicData['Huntington Hospital'];
+
+            document.getElementById('modalInsurance').textContent = data.insurance;
+            document.getElementById('modalServices').textContent = data.services;
+            document.getElementById('modalCost').textContent = data.cost;
+            document.getElementById('modalLanguages').textContent = data.languages;
+
+            // Sample reviews
+            const reviews = `
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="review-author">Maria G.</span>
+                        <span class="review-date">2 weeks ago</span>
+                    </div>
+                    <div class="stars" style="margin-bottom: 0.5rem;">★★★★★</div>
+                    <div class="review-text">"Great experience! Staff was friendly and my insurance was accepted without any issues. Athletic clearance completed in one visit."</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="review-author">James T.</span>
+                        <span class="review-date">1 month ago</span>
+                    </div>
+                    <div class="stars" style="margin-bottom: 0.5rem;">★★★★☆</div>
+                    <div class="review-text">"Good service overall. Wait time was longer than expected (about 2 hours), but the doctor was thorough and caring."</div>
+                </div>
+                <div class="review-item">
+                    <div class="review-header">
+                        <span class="review-author">Anonymous</span>
+                        <span class="review-date">3 weeks ago</span>
+                    </div>
+                    <div class="stars" style="margin-bottom: 0.5rem;">★★★★★</div>
+                    <div class="review-text">"I'm uninsured and they were so helpful. The sliding scale fee was very affordable. Highly recommend!"</div>
+                </div>
+            `;
+
+            document.getElementById('modalReviews').innerHTML = reviews;
+
+            modal.classList.add('active');
+        }
+
+        // Book appointment
+        function bookAppointment(clinicName) {
+            const modal = document.getElementById('bookingModal');
+            document.getElementById('bookingClinicName').textContent = clinicName;
+            modal.classList.add('active');
+        }
+
+        // Confirm booking
+        function confirmBooking() {
+            alert('Appointment booked! You will receive a confirmation email shortly.\n\nA staff member may call to confirm details.');
+            closeModal('bookingModal');
+        }
+
+        // Close modal
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Toggle notifications
+        function toggleNotifications() {
+            const alertsSection = document.querySelector('.alerts-section');
+            alertsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Dismiss alert
+        function dismissAlert(button) {
+            const alert = button.closest('.alert-item');
+            alert.style.transition = 'opacity 0.3s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => {
+                alert.remove();
+            }, 300);
+        }
+
+        // Perform search
+        function performSearch() {
+            const location = document.getElementById('location').value;
+            const insurance = document.getElementById('insurance').value;
+            const service = document.getElementById('service').value;
+
+            alert(`Searching for clinics in "${location}" that accept "${insurance}" for "${service}"`);
+        }
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
